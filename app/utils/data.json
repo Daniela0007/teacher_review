@@ -1,0 +1,340 @@
+{
+    "Licență anul 2": {
+        "courses": {
+            "Algoritmi genetici": [
+                "Lect. dr. Croitoru Eugen",
+                "Prof. dr. Luchian Henri"
+            ],
+            "Algoritmica grafurilor": [
+                "Lect. dr. Olariu Florentin Emanuel",
+                "Asist. drd. Ioniță Alexandru",
+                "Dr. Curca Eduard",
+                "Lect. dr. Frăsinaru Cristian",
+                "Lect. dr. Diac Paul"
+            ],
+            "Baze de date": [
+                "Lect. dr. Vârlan Cosmin",
+                "Lect. dr. Vârlan Simona-Elena",
+                "Prof. dr. Breabăn Mihaela",
+                "Stoica George",
+                "Asist. drd. Cornei Laura"
+            ],
+            "Calcul cuantic": [
+                "Conf. dr. Arusoaie Andreea-Valentina"
+            ],
+            "Calculabilitate, decidabilitate si complexitate": [
+                "Prof. dr. Țiplea Ferucio Laurențiu",
+                "Colab. Lazarescu Simona"
+            ],
+            "Limba Engleză III": [
+                "Lect. dr. Onofrei Paula",
+                "Lect. dr. Armanu Nicoleta"
+            ],
+            "Limbaje formale, automate si compilatoare": [
+                "Lect. dr. Captarencu Oana",
+                "Asist. dr. Prelipcean Bogdan",
+                "Lect. dr. Moruz Alex",
+                "Asist. dr. Gratie Diana Elena"
+            ],
+            "Modul pedagogic": [
+              "Lect.dr. Ghirvu Lucian",
+              "Lect. dr. Apostolache Roxana",
+              "Asist. dr. Gratie Diana Elena",
+              "Rosu Roxana",
+              "Lect. dr. Vârlan Simona-Elena",
+              "Frentescu Tordai Laura",
+              "Conf. dr. Curelaru Versavia",
+              "Prof. Prisacariu Gabriela",
+              "Pascariu Laura"
+            ],
+            "Principii ale limbajelor de programare": [
+                "Conf. dr. Arusoaie Andrei"
+            ],
+            "Programare Competitivă": [
+              "Lect. dr. Diac Paul",
+              "Asist. drd. Ioniță Alexandru",
+              "Colab. Oleniuc Iulian"
+            ],
+            "Programare Rust": [
+                "Conf. dr. Gavrilut Dragos",
+                "Antoneac Andrada",
+                "Colab. Mutu Gheorghita",
+                "Colab. Damian Andrei"
+            ],
+            "Reţele de calculatoare": [
+                "Colab. Bogdan Ioana",
+                "Colab. Onu Stefan",
+                "Asist. dr. Scutelnicu Andrei",
+                "Colab. Matei Madalin",
+                "Prof. dr. Alboaie Lenuța",
+                "Conf. dr. Panu Andrei",
+                "Hrib Ecaterina",
+                "Colab. Achirei Emanuel",
+                "Achirei Georgiana"
+            ]
+        }
+    },
+    "Master anul 1": {
+        "courses": {
+            "Analiza bazelor mari de date": [
+                "Prof. dr. Breabăn Mihaela",
+                "Cluci Marius - Iulian",
+                "Colab. Simion Ciprian-Alin"
+            ],
+            "Aplicații inovative ale prelucrării limbajului natural în context anteprenorial": [
+                "Conf. dr. Forăscu Corina"
+            ],
+            "Bazele matematice ale lingvisticii computaţionale și limbaje formale": [
+                "Conf. dr. Forăscu Corina"
+            ],
+            "Blockchain - fundamente și aplicații": [
+                "Conf. dr. Arusoaie Andrei",
+                "Conf. dr. Onica Emanuel"
+            ],
+            "Capitole avansate de reţele neuronale": [
+                "Stoica George",
+                "Colab. drd. Simionescu Cristian",
+                "Lect. dr. Benchea Răzvan"
+            ],
+            "Criptanaliză": [
+                "Lect. dr. Iftene Sorin"
+            ],
+            "Criptografie": [
+                "Prof. dr. Țiplea Ferucio Laurențiu"
+            ],
+            "Lexicologie,morfologie si sintaxa computationala": [
+                "Conf. dr. Trandabăț Diana"
+            ],
+            "Managementul proiectelor": [
+                "Artene Radu",
+                "Prof. dr. Oprea Dumitru"
+            ],
+            "Metode formale in ingineria software": [
+                "Conf. dr. Arusoaie Andrei"
+            ],
+            "Metode inspirate din natură": [
+                "Lect. dr. Croitoru Eugen",
+                "Prof. dr. Luchian Henri"
+            ],
+            "Securitate cibernetică": [
+                "Lect. dr. Bîrjoveanu Cătălin"
+            ],
+            "Sisteme de operare distribuite": [
+                "Lect. dr. Vidrașcu Cristian"
+            ],
+            "Structuri de date": [
+                "Conf. dr. Gațu Cristian",
+                "Conf. dr. Răschip Mădălina",
+                "Asist. drd. Ioniță Alexandru"
+            ],
+            "Tehnici avansate de ingineria programarii": [
+                "Prof. dr. Iftene Adrian"
+            ],
+            "Tehnologii Java": [
+                "Drd. Irimia Cosmin",
+                "Lect. dr. Moruz Alex",
+                "Lect. dr. Frăsinaru Cristian"
+            ],
+            "Vedere artificială": [
+                "Conf. dr. Ignat Anca",
+                "Tabarcea Augustus"
+            ]
+        }
+    },
+    "Licență anul 3": {
+        "courses": {
+            "Animatie 3D: algoritmi si tehnici fundamentale": [
+                "Conf. dr. Vitcu Anca"
+            ],
+            "Capitole speciale de sisteme de operare": [
+                "Lect. dr. Vidrașcu Cristian",
+                "Colab. Balan Gheorghe"
+            ],
+            "Dezvoltare de programe bazată pe verificare": [
+                "Conf. dr. Ciobâcă Ștefan"
+            ],
+            "Dezvoltarea sistemelor fizice utilizând microprocesoare": [
+                "Lect. dr. Vârlan Cosmin",
+                "Asist. dr. Craciun Vlad"
+            ],
+            "Inteligenţă artificială": [
+                "Lect. dr. Pistol Ionuț Cristian",
+                "Conf. dr. Răschip Mădălina",
+                "Conf. dr. Trandabăț Diana",
+                "Asist. drd. Cornei Laura"
+            ],
+            "Introducere în realitatea mixtă": [
+                "Prof. dr. Iftene Adrian",
+                "Constantinescu Gabriel",
+                "Colab. Silion Dragos"
+            ],
+            "Introducere în. Net": [
+                "Drd. Olariu Florin"
+            ],
+            "Modul pedagogic": [
+                "Lect.dr. Ghirvu Lucian",
+                "Lect. dr. Apostolache Roxana",
+                "Asist. dr. Gratie Diana Elena",
+                "Rosu Roxana",
+                "Lect. dr. Vârlan Simona-Elena",
+                "Frentescu Tordai Laura",
+                "Conf. dr. Curelaru Versavia",
+                "Prof. Prisacariu Gabriela",
+                "Pascariu Laura"
+            ],
+            "Programare Competitivă": [
+              "Lect. dr. Diac Paul",
+              "Asist. drd. Ioniță Alexandru",
+              "Colab. Oleniuc Iulian"
+            ],
+            "Programare în Python": [
+                "Conf. dr. Gavrilut Dragos",
+                "Colab. Lupascu Marilena",
+                "Colab. Lazarescu Simona",
+                "Melinte Daria",
+                "Peterca Adrian",
+                "Asist. dr. Craciun Vlad"
+            ],
+            "Programare și modelare probabilistă": [
+                "Conf. dr. Zălinescu Adrian",
+                "Colab. drd. Simionescu Cristian"
+            ],
+            "Rețele neuronale": [
+                "Stoica George",
+                "Marculeț Dan",
+                "Colab. drd. Simionescu Cristian",
+                "Lect. dr. Benchea Răzvan"
+            ],
+            "Securitatea informaţiei": [
+                "Prof. dr. Țiplea Ferucio Laurențiu",
+                "Coteanu Maria",
+                "Colab. Lazarescu Simona",
+                "Asist. dr. Prelipcean Bogdan",
+                "Țicloș Olimpia",
+                "Lect. dr. Nica Anca-Maria"
+            ],
+            "Tehnici de programare multiprocesor": [
+                "Lect. dr. Diac Paul",
+                "Conf. dr. Onica Emanuel"
+            ],
+            "Învățare automată": [
+                "Colab. Ciobanu Sebastian",
+                "Conf. dr. Ciortuz Liviu",
+                "Colab. drd. Simionescu Cristian",
+                "Conf. dr. Ignat Anca",
+                "Albert Ramona",
+                "Dimitriu Corina",
+                "Colab. Pantiru Stefan"
+            ]
+        }
+    },
+    "Licență anul 1": {
+        "courses": {
+            "Arhitectura calculatoarelor şi sistemelor de operare": [
+                "Colab. Anton Dan Gabriel",
+                "Colab. Vitel Silviu",
+                "Lect.dr. Rădulescu Vlad",
+                "Colab. Balan Gheorghe",
+                "Parpalea Madalina",
+                "Colab. Simion Ruben",
+                "Colab. Leon Daniel"
+            ],
+            "Etică și integritate academică": [
+                "Colab. Olariu Cristina"
+            ],
+            "Introducere în programare": [
+                "Lect. dr. Pătruț Bogdan",
+                "Asist. drd. Ioniță Alexandru",
+                "Prof. Hadimbu Stelian"
+            ],
+            "Limba Engleză I": [
+                "Asist. dr. Perez Cenel Augusto",
+                "Lect. dr. Armanu Nicoleta",
+                "Lect. dr. Onofrei Paula"
+            ],
+            "Logică pentru informatică": [
+                "Conf. dr. Arusoaie Andrei",
+                "Conf. dr. Ciobâcă Ștefan",
+                "Asist. dr. Gratie Diana Elena",
+                "Grigorita Delia"
+            ],
+            "Matematică - Calcul diferențial și integral": [
+                "Conf. dr. Arusoaie Andreea-Valentina",
+                "Conf. dr. Zălinescu Adrian",
+                "Dr. Curca Eduard",
+                "Conf. dr. Forăscu Corina"
+            ],
+            "Modul pedagogic": [
+              "Lect.dr. Ghirvu Lucian",
+              "Lect. dr. Apostolache Roxana",
+              "Asist. dr. Gratie Diana Elena",
+              "Rosu Roxana",
+              "Lect. dr. Vârlan Simona-Elena",
+              "Frentescu Tordai Laura",
+              "Conf. dr. Curelaru Versavia",
+              "Prof. Prisacariu Gabriela",
+              "Pascariu Laura"
+            ],
+            "Programare Competitivă": [
+                "Lect. dr. Diac Paul",
+                "Asist. drd. Ioniță Alexandru",
+                "Colab. Oleniuc Iulian"
+            ],
+            "Strategii eficiente de învățare": [
+                "Asist. dr. Gratie Diana Elena"
+            ],
+            "Structuri de date": [
+                "Conf. dr. Gațu Cristian",
+                "Conf. dr. Răschip Mădălina",
+                "Asist. drd. Ioniță Alexandru",
+                "Rusu Daniel",
+                "Colab. drd. Oniciuc Oriana",
+                "Vlad Adriana"
+            ]
+        }
+    },
+    "Master anul 2": {
+        "courses": {
+            "Cercetare formala 2": [
+                "Conf. dr. Arusoaie Andrei"
+            ],
+            "Cercetări operaţionale": [
+                "Lect. dr. Olariu Florentin Emanuel"
+            ],
+            "Dezvoltarea aplicațiilor Web": [
+                "Prof. dr. Buraga Sabin Corneliu"
+            ],
+            "Reverse Engineering": [
+                "Colab. Zaharia Raul",
+                "Conf. dr. Gavrilut Dragos"
+            ],
+            "Securitate software": [
+                "Lect. dr. Bîrjoveanu Cătălin"
+            ],
+            "Securitatea comertului electronic": [
+                "Colab. Simion Emil"
+            ],
+            "Securitatea reţelelor wireless şi a dispozitivelor mobile": [
+                "Lect. dr. Iftene Sorin"
+            ],
+            "Securitatea sistemelor de operare si sisteme malitioase": [
+                "Colab. Simion Ciprian-Alin",
+                "Conf. dr. Gavrilut Dragos"
+            ],
+            "Semantica și pragmatica limbajului natural": [
+                "CS II Dr. Gifu Daniela"
+            ],
+            "Statistică computațională": [
+                "Conf. dr. Gațu Cristian"
+            ],
+            "Traducere automată": [
+                "Conf. dr. Trandabăț Diana"
+            ],
+            "Învățare profundă cu aplicații în procesarea limbajului natural": [
+                "Prof. dr. Breabăn Mihaela",
+                "Conf. dr. Răschip Mădălina",
+                "Conf. dr. Trandabăț Diana"
+            ]
+        }
+    }
+}

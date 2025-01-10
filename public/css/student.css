@@ -1,0 +1,374 @@
+html, body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.header{
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header,
+main,
+footer {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.header{
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.header .logout-button {
+  background: linear-gradient(90deg, #007bff, #0056d2);
+  color: #fff;
+  padding: 1rem 1.25rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.header .logout-button:hover {
+  background: linear-gradient(90deg, #0056d2, #003ba1);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.header .logout-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
+}
+
+.hero {
+  position: relative;
+  width: 90%;
+  height: 700px;
+  background: url('../assets/hero_pattern1.png');
+
+  margin: 0 auto;
+
+  margin-bottom: 2rem;
+  border-radius: 2rem;
+}
+
+.hero-content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding-top: 6rem;
+
+  text-align: center;
+  color: white;
+}
+
+.hero h1 {
+  font-weight: 600;
+  font-size: 50px;
+}
+
+.hero p {
+  font-weight: 400;
+  font-size: 20px;
+  margin: auto;
+  width: 600px;
+}
+
+
+.feedback-form {
+  position: relative;
+  z-index: 100;
+
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  max-width: 750px;
+  margin: -350px auto 2rem;
+
+  box-shadow: 
+      0 26px 58px rgba(34, 40, 49, 0.1), 
+      0 105px 105px rgba(34, 40, 49, 0.09);
+}
+
+
+.feedback-form h2 {
+  font-weight: 700;
+}
+
+
+.feedback-form form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 24px;
+}
+
+
+.feedback-form label {
+  font-weight: bold;
+}
+
+
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  font-size: 14px;
+  padding: 14px 16px;
+
+  resize: vertical;
+}
+
+.feedback-form .radios{
+  display: flex;
+  padding-left: 2rem;
+  gap: 1rem;
+}
+
+.radio-inline {
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+}
+
+select.form-select option[disabled] {
+  color: #aaa; 
+}
+
+select.form-select {
+  width: 100%;
+  max-width: 100%; 
+  padding: 10px; 
+  font-size: 1rem; 
+
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.form-check-input[type="radio"] {
+  width: 1px;
+}
+
+.feedback-form button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.my-reviews {
+  width: 100%;
+  margin: 4rem auto;
+  padding: 20px;
+}
+
+.my-reviews h2 {
+  margin-bottom: 4rem;
+
+  text-align: center;
+
+  color: #000000;
+  font-weight: 700;
+}
+
+.review-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 20px; 
+  padding: 20px; 
+  background-color: #f8f9fa;
+}
+
+.badge {
+  background-color: #007bff; 
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 5px;
+  margin-left: 8px;
+}
+
+.review-card {
+  background: #fff; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  overflow: hidden; 
+  padding: 15px; 
+}
+
+.card-title {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.card-title i {
+  color: #0078d7;
+  margin-right: 5px;
+}
+
+.card-subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 1.3rem;
+}
+
+.card-subtitle i {
+  color: #0078d7;
+  margin-right: 5px;
+}
+
+.card-text {
+  list-style-type: none;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.card-text i {
+  color: #0078d7;
+  margin-right: 5px;
+}
+
+.success-message, .error-message {
+  position: fixed;
+  top: 20px;
+  left: 50%; 
+  transform: translateX(-50%); 
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-size: 1rem;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeInOut 3s; 
+}
+
+.feedback-answers {
+  list-style-type: none; 
+  padding: 0;
+  margin-left: 10px; 
+  font-size: 14px;
+}
+
+.success-message {
+  background-color: #4caf50; 
+}
+
+.error-message {
+  background-color: #f44336; 
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+
+  .feedback-form {
+    max-width: 600px;
+  }
+  
+}
+
+@media (max-width: 700px) {
+  .hero {
+    display: none;
+  }
+
+  .feedback-form {
+    position: static;
+    padding: 2.3rem;
+    margin: 0 auto 2rem;
+    width: calc(100% - 1rem);
+  }
+
+  .header img {
+    height: 35px !important;
+  }
+
+  .feedback-form input,
+  .feedback-form select,
+  .feedback-form textarea {
+    font-size: 12px; 
+  }
+
+  .review-card {
+    font-size: 12px; 
+  }
+
+  .form-label #text{
+    font-size: 12px; 
+  }
+
+  .form-label i {
+    font-size: 10px; 
+    margin-right: 5px; 
+  }
+
+  .header .logout-button {
+    padding: 8px 16px !important; 
+    font-size: 0.8rem !important;
+    border-radius: 20px; 
+    gap: 8px; 
+  }
+
+  .header .logout-button i {
+    font-size: 1rem; 
+  }
+}
+
+
+@media (max-width: 480px) {
+  .review-container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    padding: 15px;
+  }
+
+  .header .logout-button {
+    padding: 7px 8px; 
+    font-size: 0.6rem; 
+    border-radius: 15px; 
+    gap: 6px; 
+  }
+
+  .header .logout-button i {
+    font-size: 0.9rem; 
+  }
+
+  select.form-select {
+    font-size: 0.8rem; 
+    padding: 6px;
+  }
+
+  .success-message, .error-message {
+    padding: 8px 12px;
+  }
+}
+
+

@@ -1,0 +1,103 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: #e0f2ff; 
+  color: #ffffff; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-container {
+  background: #ffffff; 
+  color: #1e3a8a; 
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(30, 58, 138, 0.3);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.login-container h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #1e3a8a; 
+}
+
+.login-container p {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #1e3a8a;
+}
+
+.login-form .form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.login-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1e3a8a;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #93c5fd; 
+  border-radius: 5px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+  border-color: #1e40af; 
+  box-shadow: 0 0 5px rgba(30, 64, 175, 0.5); 
+}
+
+.btn {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background: #1e3a8a;
+  color: #ffffff; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: #1e40af;
+}
+
+.btn:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  display: none;
+}
+
+.success-message {
+  color: green;
+  margin-top: 10px;
+  display: none;
+}
