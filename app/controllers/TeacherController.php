@@ -14,22 +14,6 @@ class TeacherController extends BaseController {
     include __DIR__ . '/../views/teacher.php';
   }
 
-  // public function getFeedbacks() {
-  //   if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-  //     $feedbacks = $this->teacherModel->getFeedbacks($_SESSION['username']);
-  //     if ($feedbacks) {
-  //       echo json_encode(['status' => 'success', 'feedbacks' => $feedbacks]);
-  //       exit;
-  //     } else {
-  //       echo json_encode(['status' => 'error', 'message' => 'Failed to get feedbacks']);
-  //       exit;
-  //     }
-  //   } else {
-  //     echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
-  //     exit;
-  //   }
-  // }
-
   public function getFeedbacks() {
 
     try{
@@ -44,7 +28,7 @@ class TeacherController extends BaseController {
         }
         $this->sendResponse(['success' => true, 'feedbacks' => $feedbacks]);
       } else {
-          echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+          echo json_encode(['status' => 'error', 'message' => 'Metodă de cerere invalidă.']);
           exit;
       }
     } catch (Exception $e) {
@@ -59,11 +43,11 @@ class TeacherController extends BaseController {
         echo json_encode(['status' => 'success', 'subjects' => $subjects]);
         exit;
       } else {
-        echo json_encode(['status' => 'error', 'message' => 'Failed to get subjects']);
+        echo json_encode(['status' => 'error', 'message' => 'Nu s-a reușit obținerea subiectelor.']);
         exit;
       }
     } else {
-      echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+      echo json_encode(['status' => 'error', 'message' => 'Metodă de cerere invalidă.']);
       exit;
     }
   }

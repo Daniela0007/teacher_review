@@ -15,56 +15,6 @@ class AdminController extends BaseController {
   }
 
 
-  // public function getFeedbacks() {
-  //     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-  //         $professorName = $_GET['professorName'] ?? null;
-  
-  //         if ($professorName) {
-  //             $feedbacks = $this->adminModel->getFeedbacks($professorName);
-  
-  //             if (isset($feedbacks['error']) && $feedbacks['error']) {
-  //                 echo json_encode([
-  //                     'status' => 'error',
-  //                     'message' => 'An error occurred while retrieving feedbacks: ' . $feedbacks['message']
-  //                 ]);
-  //                 exit;
-  //             }
-  
-  //             if (empty($feedbacks)) {
-  //                 // No feedbacks found
-  //                 echo json_encode([
-  //                     'status' => 'success',
-  //                     'message' => 'No feedbacks available for this professor.',
-  //                     'feedbacks' => []
-  //                 ]);
-  //                 exit;
-  //             }
-  
-  //             // Return the feedbacks
-  //             echo json_encode([
-  //                 'status' => 'success',
-  //                 'feedbacks' => $feedbacks
-  //             ]);
-  //             exit;
-  //         } else {
-  //             // Invalid or missing professor name
-  //             echo json_encode([
-  //                 'status' => 'error',
-  //                 'message' => 'Professor name is required.'
-  //             ]);
-  //             exit;
-  //         }
-  //     } else {
-  //         // Invalid request method
-  //         echo json_encode([
-  //             'status' => 'error',
-  //             'message' => 'Invalid request method.'
-  //         ]);
-  //         exit;
-  //     }
-  // }
-
-
   public function getFeedbacks()
   {
     try{
@@ -72,7 +22,7 @@ class AdminController extends BaseController {
         $data = json_decode($input, true);
 
         if (!$data || !isset($data['year'], $data['course'], $data['professor'])) {
-            $this->sendResponse(['error' => 'Invalid parameters provided'], 400);
+            $this->sendResponse(['error' => 'Parametri furnizați invalizi.'], 400);
             return;
         }
 

@@ -33,20 +33,23 @@ class StudentController extends BaseController {
           foreach ($requiredFields as $field) {
               if (!isset($data[$field]) || empty($data[$field])) {
                 http_response_code(400);
-                echo json_encode(["error" => "Missing or empty required field: $field."]);
+                echo json_encode(["error" => "Câmp obligatoriu lipsă sau gol: $field."]);
                 return;
               }
           }
 
           if (!is_array($data['feedback_answers']) || empty($data['feedback_answers'])) {
             http_response_code(400);
-            echo json_encode(["error" => "Feedback answers must be a non-empty array."]);
+            echo json_encode(["error" => "Răspunsurile feedback-ului trebuie să fie un array nevid."]);
             return;
           }
 
+          $data['negative_feedback'] = htmlspecialchars(strip_tags($data['negative_feedback']));
+          $data['positive_feedback'] = htmlspecialchars(strip_tags($data['positive_feedback']));
+
           if ($this->studentModel->reviewExists($_SESSION['username'], $data['professor'], $data['course'], $data['type'])) {
             http_response_code(409); 
-            echo json_encode(['error' => 'You have already submitted a review for this course and teacher.']);
+            echo json_encode(['error' => 'Ai trimis deja o recenzie pentru această materie și acest profesor.']);
             return;
           }
           
@@ -55,7 +58,7 @@ class StudentController extends BaseController {
             http_response_code(201);
             echo json_encode([
                 "success" => true,
-                "message" => "Feedback successfully saved.",
+                "message" => "Feedback salvat cu succes",
             ]);
           } catch (Exception $e) {
             http_response_code(500); 
@@ -80,33 +83,62 @@ class StudentController extends BaseController {
     }
     }
 
-    public function getFeedbacks() {
+    // public function getFeedbacks() {
+    //   try {
+    //       if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    //         $feedbacks = $this->studentModel->getFeedbacks($_SESSION['username']);
+    //         http_response_code(200); 
+    //         echo json_encode([
+    //             'status' => 'success',
+    //             'feedbacks' => $feedbacks ?: [] 
+    //         ]);
+    //         exit;
+    //       } else {
+    //         http_response_code(405); 
+    //         echo json_encode([
+    //             'status' => 'error',
+    //             'message' => 'Metodă de cerere invalidă. Sunt permise doar cereri de tip GET.'
+    //         ]);
+    //         exit;
+    //       }
+    //     } catch (Exception $e) {
+    //       http_response_code(500); 
+    //       echo json_encode([
+    //           'status' => 'error',
+    //           'message' => 'A apărut o eroare neașteptată. Te rugăm să încerci din nou mai târziu.',
+    //           'details' => $e->getMessage() 
+    //       ]);
+    //       exit;
+    //     }
+    // }
+
+    public function getLastReviews() {
       try {
-          if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $feedbacks = $this->studentModel->getFeedbacks($_SESSION['username']);
-            http_response_code(200); 
-            echo json_encode([
-                'status' => 'success',
-                'feedbacks' => $feedbacks ?: [] 
-            ]);
-            exit;
-          } else {
-            http_response_code(405); // Method Not Allowed
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Invalid request method. Only GET requests are allowed.'
-            ]);
-            exit;
-          }
-        } catch (Exception $e) {
-          http_response_code(500); 
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+          $feedbacks = $this->studentModel->getLastReviews($_SESSION['username']);
+          http_response_code(200); 
+          echo json_encode([
+              'status' => 'success',
+              'feedbacks' => $feedbacks ?: [] 
+          ]);
+          exit;
+        } else {
+          http_response_code(405); 
           echo json_encode([
               'status' => 'error',
-              'message' => 'An unexpected error occurred. Please try again later.',
-              'details' => $e->getMessage() 
+              'message' => 'Metodă de cerere invalidă. Sunt permise doar cereri de tip GET.'
           ]);
           exit;
         }
+      } catch (Exception $e) {
+        http_response_code(500); 
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'A apărut o eroare neașteptată. Te rugăm să încerci din nou mai târziu.',
+            'details' => $e->getMessage() 
+        ]);
+        exit;
+      }
     }
 
 }

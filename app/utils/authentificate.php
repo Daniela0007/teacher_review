@@ -19,42 +19,39 @@ function authentificate($user, $password) {
     $entries = ldap_get_entries($conexiune_ldap, $result);
 
     if ($entries["count"] > 0) {
-        $userDn = $entries[0]["dn"]; 
+      $userDn = $entries[0]["dn"];
 
-        if (preg_match('/ou=([^,]+),ou=(students|professors)/', $userDn, $matches)) {
-            $ouValue = $matches[1]; 
-            $category = $matches[2]; 
+      if (strpos($userDn, 'ou=students') !== false) {
+          $role = 'student';
+      } elseif (strpos($userDn, 'ou=professors') !== false) {
+          $role = 'professor';
+      } else {
+          return json_encode([
+              'autentificat' => false,
+              'rol' => null,
+              'error' => 'Nu este student sau profesor.'
+          ]);
+      }
 
-            $bind = @ldap_bind($conexiune_ldap, $userDn, $password);
+      $bind = @ldap_bind($conexiune_ldap, $userDn, $password);
 
-            if ($bind) {
-                return json_encode([
-                    'autentificat' => true,
-                    'rol' => $category === 'students' ? 'student' : 'proffesor',
-                    'ou' => $ouValue
-                ]);
-            } else {
-                return json_encode([
-                    'autentificat' => false,
-                    'rol' => null,
-                    'ou' => null,
-                    'error' => 'Autentificare esuata.'
-                ]);
-            }
-        } else {
-            return json_encode([
-                'autentificat' => false,
-                'rol' => null,
-                'ou' => null,
-                'error' => 'Nu este student sau profesor.'
-            ]);
-        }
-    } else {
-        return json_encode([
-            'autentificat' => false,
-            'rol' => null,
-            'ou' => null,
-            'error' => 'Utilizator inexistent.'
-        ]);
-    }
+      if ($bind) {
+          return json_encode([
+              'autentificat' => true,
+              'rol' => $role
+          ]);
+      } else {
+          return json_encode([
+              'autentificat' => false,
+              'rol' => null,
+              'error' => 'Autentificare esuata.'
+          ]);
+      }
+  } else {
+      return json_encode([
+          'autentificat' => false,
+          'rol' => null,
+          'error' => 'Utilizator inexistent.'
+      ]);
+  }
 }

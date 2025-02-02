@@ -16,7 +16,7 @@
 
       <form id="login-form" class="login-form" action="" method="POST">
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email">Mail</label>
           <input
             type="username"
             id="username"
@@ -26,7 +26,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Parola</label>
           <input
             type="password"
             id="password"
@@ -37,8 +37,8 @@
         </div>
         <button type="submit" name="submit" class="btn" id="login-btn">Login</button>
 
-        <p class="error-message" id="error-message">Invalid username or password.</p>
-        <p class="success-message" id="success-message">Login successful! Redirecting...</p>
+        <p class="error-message" id="error-message">Nume de utilizator sau parolă invalidă.</p>
+        <p class="success-message" id="success-message">Autentificare reușită! Redirecționare în curs...</p>
       </form>
       
     </div>
@@ -85,18 +85,18 @@
 
             if (response.ok && result.status === 'success') {
               successMessage.style.display = 'block';
-              successMessage.textContent = 'Login successful! Redirecting...';
+              successMessage.textContent = 'Autentificare reușită! Redirecționare în curs...';
 
               setTimeout(() => {
                 window.location.href = result.redirect_url;
               }, 2000);
             } else {
               errorMessage.style.display = 'block';
-              errorMessage.textContent = result.message || 'Invalid username or password.';
+              errorMessage.textContent = result.message || 'Nume de utilizator sau parolă invalidă.';
             }
           } catch (error) {
             errorMessage.style.display = 'block';
-            errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+            errorMessage.textContent = 'A apărut o eroare neașteptată. Te rugăm să încerci din nou mai târziu.';
             console.error('Login error:', error);
           }
       });

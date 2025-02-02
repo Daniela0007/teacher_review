@@ -119,10 +119,9 @@ footer {
 }
 
 
-.feedback-form label {
+.feedback-form label{
   font-weight: bold;
 }
-
 
 .feedback-form input,
 .feedback-form select,
@@ -141,15 +140,23 @@ footer {
 
 .feedback-form .radios{
   display: flex;
+  flex-wrap: wrap;
   padding-left: 2rem;
   gap: 1rem;
+}
+
+#questions-container .row {
+  margin-bottom: 10px;
 }
 
 .radio-inline {
     display: flex; 
     flex-direction: column;
     align-items: center; 
+    font-size: 12px;
+    font-weight: 400 !important;
 }
+
 
 select.form-select option[disabled] {
   color: #aaa; 
@@ -213,6 +220,7 @@ select.form-select {
 }
 
 .review-card {
+  position: relative;
   background: #fff; 
   border: 1px solid #ddd; 
   border-radius: 8px; 
@@ -221,11 +229,59 @@ select.form-select {
   padding: 15px; 
 }
 
+.card-header{
+  display: flex;
+  justify-content: space-between;
+}
+
 .card-title {
   font-size: 18px;
   color: #333;
   margin-bottom: 20px;
 }
+
+
+/* Legend Box in the review card */
+
+.legend {
+  position: relative; /* For positioning the legend-box */
+}
+
+.legend-icon {
+  font-size: 16px;
+  color: #555;
+}
+
+.legend-box {
+  position: absolute;
+  top: 0;
+  /* bottom: 100%; */
+  /* left: 0; */
+  left: 50%;
+  transform: translate(-100%, 22%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  width: 150px;
+  z-index: 1000;
+  font-size: x-small;
+  display: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  /* margin-bottom: 5px; */
+  gap: 5px;
+}
+
+/* .legend-item:last-child {
+  margin-bottom: 0;
+} */
+
+/* ------------------------------------------------------ */
 
 .card-title i {
   color: #0078d7;
@@ -249,6 +305,9 @@ select.form-select {
   color: #555;
   margin-bottom: 10px;
   padding-left: 10px;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .card-text i {
@@ -277,6 +336,43 @@ select.form-select {
   font-size: 14px;
 }
 
+.feedback-categories {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-left: 1rem;
+}
+
+.feedback-category {
+  margin-bottom: 10px;
+}
+
+.feedback-category h6 {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.color-row {
+  display: flex;
+  gap: 5px;
+  margin-left: 10px;
+}
+
+.color-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.clicked-question-container {
+  font-size: 13px;
+  color: #333;
+  margin-left: 25px;
+}
+
 .success-message {
   background-color: #4caf50; 
 }
@@ -284,6 +380,55 @@ select.form-select {
 .error-message {
   background-color: #f44336; 
 }
+
+
+/* Last Reviews for stduent page */
+
+.reviews-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+  text-align: center;
+  color: #333;
+}
+
+.table-container {
+  overflow-x: auto; 
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+
+th {
+  background-color: #4d8dd2;
+  color: white;
+}
+
+
+.no-reviews {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 10px;
+}
+
 
 @media (max-width: 900px) {
   .hero {
@@ -343,7 +488,6 @@ select.form-select {
   }
 }
 
-
 @media (max-width: 480px) {
   .review-container {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -368,6 +512,10 @@ select.form-select {
 
   .success-message, .error-message {
     padding: 8px 12px;
+  }
+
+  .radio-inline{
+    font-size: 10px;
   }
 }
 

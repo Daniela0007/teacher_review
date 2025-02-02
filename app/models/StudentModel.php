@@ -9,9 +9,16 @@ class StudentModel {
 
     public function saveFeedback($data, $student_mail) {
         try {
+            $stmt = $this->db->prepare("INSERT INTO StudentCourses (student_mail, course, professor, type) VALUES (:student_mail, :course, :professor, :type)");
+            $stmt->bindParam(':student_mail', $student_mail);
+            $stmt->bindParam(':course', $data['course']);
+            $stmt->bindParam(':professor', $data['professor']);
+            $stmt->bindParam(':type', $data['type']);
+            $stmt->execute();
+
             $this->db->beginTransaction();
 
-            $stmt = $this->db->prepare("INSERT INTO Feedback (student_mail, course, professor, year, positive_feedback, negative_feedback, type) VALUES (:student_mail, :course, :professor, :year, :positive_feedback, :negative_feedback, :type)");
+            $stmt = $this->db->prepare("INSERT INTO Feedback (course, professor, year, positive_feedback, negative_feedback, type) VALUES (:course, :professor, :year, :positive_feedback, :negative_feedback, :type)");
 
             $stmt->bindParam(':course', $data['course']);
             $stmt->bindParam(':professor', $data['professor']);
@@ -19,7 +26,7 @@ class StudentModel {
             $stmt->bindParam(':positive_feedback', $data['positive_feedback']);
             $stmt->bindParam(':negative_feedback', $data['negative_feedback']);
             $stmt->bindParam(':type', $data['type']);
-            $stmt->bindParam(':student_mail',$student_mail);
+            // $stmt->bindParam(':student_mail',$student_mail);
             $stmt->execute();
 
             $feedback_id = $this->db->lastInsertId();
@@ -30,7 +37,7 @@ class StudentModel {
             foreach ($data['feedback_answers'] as $answer) {
                 $stmt->bindParam(':feedback_id', $feedback_id);
                 $stmt->bindParam(':question_id', $answer['question_id']);
-                $stmt->bindParam(':answer', $answer['answer']);
+                $stmt->bindParam(':answer', $answer['answer_text']);
                 $stmt->execute();
             }
 
@@ -49,63 +56,97 @@ class StudentModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getFeedbacks($student_mail) {
-        try {
-            $sql = "
-                SELECT 
-                    Feedback.id AS feedback_id,
-                    Feedback.course,
-                    Feedback.student_mail,
-                    Feedback.professor,
-                    Feedback.year,
-                    Feedback.positive_feedback,
-                    Feedback.negative_feedback,
-                    Feedback.type,
-                    Questions.question_text,
-                    FeedbackAnswers.answer
-                FROM Feedback
-                INNER JOIN FeedbackAnswers ON Feedback.id = FeedbackAnswers.feedback_id
-                INNER JOIN Questions ON FeedbackAnswers.question_id = Questions.id
-                WHERE Feedback.student_mail = :student_mail
-                ORDER BY Feedback.id, FeedbackAnswers.question_id;
-            ";
+    // public function getFeedbacks($student_mail) {
+    //     try {
+    //         $sql = "
+    //             SELECT 
+    //                 Feedback.id AS feedback_id,
+    //                 Feedback.course,
+    //                 Feedback.student_mail,
+    //                 Feedback.professor,
+    //                 Feedback.year,
+    //                 Feedback.positive_feedback,
+    //                 Feedback.negative_feedback,
+    //                 Feedback.type,
+    //                 Questions.question_text,
+    //                 FeedbackAnswers.answer
+    //             FROM Feedback
+    //             INNER JOIN FeedbackAnswers ON Feedback.id = FeedbackAnswers.feedback_id
+    //             INNER JOIN Questions ON FeedbackAnswers.question_id = Questions.id
+    //             WHERE Feedback.student_mail = :student_mail
+    //             ORDER BY Feedback.id, FeedbackAnswers.question_id;
+    //         ";
     
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(':student_mail', $student_mail);
-            $stmt->execute();
+    //         $stmt = $this->db->prepare($sql);
+    //         $stmt->bindParam(':student_mail', $student_mail);
+    //         $stmt->execute();
     
-            $feedbacks = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $feedback_id = $row['feedback_id'];
+    //         $feedbacks = [];
+    //         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //             $feedback_id = $row['feedback_id'];
     
-                if (!isset($feedbacks[$feedback_id])) {
-                    $feedbacks[$feedback_id] = [
-                        'feedback_id' => $row['feedback_id'],
-                        'course' => $row['course'],
-                        'student_mail' => $row['student_mail'],
-                        'professor' => $row['professor'],
-                        'year' => $row['year'],
-                        'positive_feedback' => $row['positive_feedback'],
-                        'negative_feedback' => $row['negative_feedback'],
-                        'type' => $row['type'],
-                        'feedback_answers' => []
-                    ];
-                }
+    //             if (!isset($feedbacks[$feedback_id])) {
+    //                 $feedbacks[$feedback_id] = [
+    //                     'feedback_id' => $row['feedback_id'],
+    //                     'course' => $row['course'],
+    //                     'student_mail' => $row['student_mail'],
+    //                     'professor' => $row['professor'],
+    //                     'year' => $row['year'],
+    //                     'positive_feedback' => $row['positive_feedback'],
+    //                     'negative_feedback' => $row['negative_feedback'],
+    //                     'type' => $row['type'],
+    //                     'feedback_answers' => []
+    //                 ];
+    //             }
     
-                $feedbacks[$feedback_id]['feedback_answers'][] = [
-                    'question' => $row['question_text'],
-                    'answer' => $row['answer']
-                ];
-            }
+    //             $feedbacks[$feedback_id]['feedback_answers'][] = [
+    //                 'question' => $row['question_text'],
+    //                 'answer' => $row['answer']
+    //             ];
+    //         }
     
-            return array_values($feedbacks);
-        } catch (PDOException $e) {
-            return ['error' => $e->getMessage()];
-        }
+    //         return array_values($feedbacks);
+    //     } catch (PDOException $e) {
+    //         return ['error' => $e->getMessage()];
+    //     }
+    // }
+    
+
+    public function getLastReviews($student_mail) {
+      try {
+          $sql = "
+              SELECT 
+                  student_mail,
+                  course,
+                  professor,
+                  type
+              FROM StudentCourses
+              WHERE student_mail = :student_mail
+              ORDER BY id DESC;
+          ";
+  
+          $stmt = $this->db->prepare($sql);
+          $stmt->bindParam(':student_mail', $student_mail);
+          $stmt->execute();
+  
+          $studentCourses = [];
+          while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+              $studentCourses[] = [
+                  'student_mail' => $row['student_mail'],
+                  'course' => $row['course'],
+                  'professor' => $row['professor'],
+                  'type' => $row['type']
+              ];
+          }
+  
+          return $studentCourses;
+      } catch (PDOException $e) {
+          return ['error' => $e->getMessage()];
+      }
     }
 
     public function reviewExists($student_mail, $professor, $course, $type) {
-      $sql = "SELECT COUNT(*) as count FROM Feedback WHERE student_mail = :student_mail AND professor = :professor AND course = :course AND type = :type";
+      $sql = "SELECT COUNT(*) as count FROM StudentCourses WHERE student_mail = :student_mail AND professor = :professor AND course = :course AND type = :type";
       $stmt = $this->db->prepare($sql);
       $stmt->bindParam(':student_mail', $student_mail);
       $stmt->bindParam(':professor', $professor);

@@ -101,6 +101,88 @@ body {
 }
 
 
+.feedback-categories {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-left: 1rem;
+}
+
+.feedback-category h6 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.feedback-category .color-row {
+  margin-left: 10px;
+}
+
+.color-row {
+  display: flex;
+  gap: 5px;
+  margin-left: 10px;
+}
+
+.color-box {
+  width: 14px;
+  height: 14px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.clicked-question-container {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #333;
+  margin-left: 25px;
+}
+
+
+/* Legend Box nin the card header */
+
+.card-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.legend {
+  position: relative; /* For positioning the legend-box */
+}
+
+.legend-icon {
+  font-size: 16px;
+  color: #555;
+}
+
+.legend-box {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-100%, 22%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 5px;
+  width: 150px;
+  z-index: 1000;
+  font-size: x-small;
+  display: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* --------------------------------- */
+
+
 
 .success-message, .error-message, .info-message {
   position: fixed;

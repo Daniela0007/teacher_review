@@ -5,12 +5,12 @@ class UserModel {
     public function getUserRole($email, $password) {
         $username = strstr($email, '@', true);
 
-        if ($email === 'arusoaie.andrei@info.uaic.ro') {
-            return "professor";
-        }
-        if ($email === 'admin@info.uaic.ro') {
-            return "admin";
-        }
+        // if ($email === 'rosu.roxana@info.uaic.ro') {
+        //     return "professor";
+        // }
+        // if ($email === 'admin@info.uaic.ro') {
+        //     return "admin";
+        // }
         
         $response = authentificate($username, $password);
 

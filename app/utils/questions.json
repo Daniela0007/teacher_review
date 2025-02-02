@@ -1,7 +1,51 @@
+
 {
-  "questions": [
-    "Cât de bine ai înțeles explicațiile profesorului?",
-    "Cum apreciați comunicarea profesorului cu studenții?",
-    "Cât de des se oferă feedback la activitățile studenților?"
-  ]
+    "categories": [
+      {
+        "category_name": "Calitatea conținutului",
+        "questions": [
+          "Cursul/seminarul este structurat logic, clar și motivant.",
+          "Cursurile/seminariile aduc elemente noi pe baza unei bibliografii relevante.",
+          "Cursurile/seminariile conțin și rezultate ale cercetării științifice recente din domeniu.",
+          "După ce am studiat această materie interesul meu pentru domeniu a crescut."
+        ]
+      },
+      {
+        "category_name": "Calitatea prezentării cursului/seminarului",
+        "questions": [
+          "Profesorul enunță de la început obiectivele didactice și urmărește atingerea lor.",
+          "Explicațiile profesorului sunt clare.",
+          "Profesorul predă cu pasiune și interes.",
+          "Sunt mulțumit de metodele și mijloacele folosite de profesor pentru a ne ușura înțelegerea materiei respective.",
+          "Aș dori să studiez și altă materie cu acest profesor.",
+          "Prin maniera de lucru, profesorul stimulează gândirea independentă și spiritul critic."
+        ]
+      },
+      {
+        "category_name": "Organizarea activității didactice",
+        "questions": [
+          "Profesorul valorifică în întregime timpul pentru a explica problematica disciplinei.",
+          "Profesorul organizează bine activitatea de curs/seminar.",
+          "Profesorul imprimă o atmosferă de respect și încredere.",
+          "Profesorul are stabilite ore de consultație și oferă tot sprijinul necesar studenților.",
+          "Profesorul este punctual la ore."
+        ]
+      },
+      {
+        "category_name": "Relația student-profesor",
+        "questions": [
+          "Profesorul încurajează participarea studenților la ore, primind favorabil întrebările sau intervențiile acestora.",
+          "Profesorul stimulează interesul studenților și îi ghidează în proiecte profesionale.",
+          "Prin comportament și atitudini profesorul a avut o influență pozitivă asupra sistemului meu de valori.",
+          "Profesorul tratează studenții cu respect și cordialitate."
+        ]
+      },
+      {
+        "category_name": "Evaluarea/examinarea",
+        "questions": [
+          "Modalitățile de evaluare și cerințele specifice au fost stabilite de la începutul activității didactice.",
+          "Profesorul evaluează studenții în mod corect/imparțial."
+        ]
+      }
+    ]
 }

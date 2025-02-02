@@ -22,26 +22,40 @@ class LoginController {
 
         $role = $userModel->getUserRole($username, $password);
 
-        if ($role === 'student') {
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = 'student';
-            echo json_encode(['status' => 'success', 'redirect_url' => '?controller=Student&action=index']);
-            exit;
-        } elseif ($role === 'admin') {
-            $_SESSION['username'] = $username;
-            $_SESSION['role'] = 'admin';
-            echo json_encode(['status' => 'success', 'redirect_url' => '?controller=Admin&action=index']);
-            exit;
-        } elseif ($role === 'professor') {
-            $_SESSION['username'] = $this->findTeacherName($username);
-            $_SESSION['role'] = 'professor';
-            echo json_encode(['status' => 'success', 'redirect_url' => '?controller=Teacher&action=index']);
-            exit;
-        } else {
-            $_SESSION['username'] = '';
-            echo json_encode(['status' => 'error', 'message' => 'Invalid username or password.']);
-            exit;
-        }
+        $adminProfessors = [
+          "Prof. dr. Alboaie Lenuța",
+          "Conf. dr. Arusoaie Andrei"
+      ];
+      
+      if ($role === 'student') {
+          $_SESSION['username'] = $username;
+          $_SESSION['role'] = 'student';
+          echo json_encode(['status' => 'success', 'redirect_url' => 'student']);
+          exit;
+      } elseif ($role === 'admin') {
+          $_SESSION['username'] = $username;
+          $_SESSION['role'] = 'admin';
+          echo json_encode(['status' => 'success', 'redirect_url' => 'admin']);
+          exit;
+      } elseif ($role === 'professor') {
+          $teacherName = $this->findTeacherName($username);
+          //echo $teacherName;
+          if (in_array($teacherName, $adminProfessors)) {
+              $_SESSION['username'] = $teacherName;
+              $_SESSION['role'] = 'admin';
+              echo json_encode(['status' => 'success', 'redirect_url' => 'admin']);
+              exit;
+          } else {
+              $_SESSION['username'] = $teacherName;
+              $_SESSION['role'] = 'professor';
+              echo json_encode(['status' => 'success', 'redirect_url' => 'teacher']);
+              exit;
+          }
+      } else {
+          $_SESSION['username'] = '';
+          echo json_encode(['status' => 'error', 'message' => 'Nume de utilizator sau parolă invalidă.']);
+          exit;
+      }
     }
 
     public function logout() {
@@ -49,29 +63,37 @@ class LoginController {
         session_unset();
         session_destroy();
 
-        header('Location: ?controller=Login&action=index');
+        header('Location: login');
         exit;
     }
 
     private function findTeacherName($teacher_mail) {
-        $jsonFile = __DIR__ . '/../utils/professors.json'; 
-        $teacherList = json_decode(file_get_contents($jsonFile), true);
-        if (preg_match('/^([a-zA-Z]+)\.([a-zA-Z]+)@/', $teacher_mail, $matches)) {
-            $firstName = ucfirst(strtolower($matches[2]));
-            $lastName = ucfirst(strtolower($matches[1]));
-            $bestMatch = null;
-            $highestSimilarity = 0;
-
-            foreach ($teacherList as $teacher) {
-                similar_text("$firstName $lastName", $teacher, $similarity);
-                if ($similarity > $highestSimilarity) {
-                    $highestSimilarity = $similarity;
-                    $bestMatch = $teacher;
-                }
-            }
-            return $bestMatch ?: "No matching teacher found";
-        } else {
-            return "Invalid email format";
-        }
-    }
+      $jsonFile = __DIR__ . '/../utils/professors.json'; 
+      $teacherList = json_decode(file_get_contents($jsonFile), true);
+  
+      if (preg_match('/^([a-zA-Z]+)\.([a-zA-Z]+)@/', $teacher_mail, $matches)) {
+          $lastName = ucfirst(strtolower($matches[1]));  
+          $firstName = ucfirst(strtolower($matches[2])); 
+          $emailName = "$firstName $lastName";  
+  
+          $bestMatch = null;
+          $highestSimilarity = 0;
+  
+          foreach ($teacherList as $teacher) {
+              $cleanTeacherName = preg_replace('/^(Prof\. dr\.|Lect\. dr\.|Conf\. dr\.|Dr\.|Ing\.|Asist\. univ\.|Acad\.)\s*/', '', $teacher);
+  
+              similar_text($emailName, $cleanTeacherName, $similarity);
+  
+              if ($similarity > $highestSimilarity) {
+                  $highestSimilarity = $similarity;
+                  $bestMatch = $teacher;
+              }
+          }
+  
+          return $bestMatch ?: "No matching teacher found";
+      } else {
+          return "Format de email invalid.";
+      }
+  }
+  
 }

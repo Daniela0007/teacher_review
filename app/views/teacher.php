@@ -67,9 +67,7 @@
 
   <!-- JavaScript -->
   <script>
-    function generateStars(rating) {
-      return '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    }
+    const questionToCategoryMap = {};
 
     function displayMessage(message, type) {
         const messageContainer = document.createElement('div');
@@ -83,56 +81,26 @@
             messageContainer.remove();
         }, 3000);
     }
-
-    // function getFeedbacks() {
-    //   fetch('?controller=Teacher&action=getFeedbacks', {
-    //     method: 'GET',
-    //   })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //       //console.log(data);
-    //       const feedbacks = data.feedbacks;
-    //       const feedbackContainer = document.getElementById("review-container");
-
-    //       feedbacks.forEach((feedbackData) => {
-    //         const feedbackCard = document.createElement("div");
-    //         feedbackCard.className = "review-card";
-
-    //         feedbackCard.innerHTML = `
-    //           <div class="card-body">
-    //             <h6 class="card-subtitle">
-    //               <i class="fas fa-book"></i> ${feedbackData.course}
-    //               <span class="badge">${feedbackData.type === 'curs' ? 'Curs' : 'Seminar'}</span>
-    //             </h6>
-    //             <p class="card-text">
-    //               <i class="fas fa-thumbs-up"></i> ${feedbackData.positive_feedback}
-    //             </p>
-    //             <p class="card-text">
-    //               <i class="fas fa-thumbs-down"></i> ${feedbackData.negative_feedback}
-    //             </p>
-    //             <ul class="feedback-answers">
-    //               ${feedbackData.feedback_answers
-    //                 .map(
-    //                   (feedback) => `
-    //                   <li>
-    //                     <strong>${feedback.question}</strong> ${generateStars(feedback.answer)}
-    //                   </li>
-    //                 `
-    //                 )
-    //                 .join("")}
-    //             </ul>
-    //             <p class="card-year">
-    //               <i class="fas fa-calendar"></i> ${feedbackData.year}
-    //             </p>
-    //           </div>
-    //         `;
-
-    //         feedbackContainer.appendChild(feedbackCard);
-    //       });
-
-    //     })
-    //     .catch(error => console.error('Error loading feedbacks:', error));
-    // }
+    
+    function fetchQuestionsData() {
+        fetch('../app/utils/questions.json') 
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch JSON data');
+                    }
+                    return response.json(); 
+                })
+                .then((data) => {
+                  data.categories.forEach(category => {
+                    category.questions.forEach(question => {
+                      questionToCategoryMap[question] = category.category_name;
+                    });
+                  });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+    }
     
     function getSubjects() {
       fetch('?controller=Teacher&action=getSubjects', {
@@ -156,6 +124,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         //getFeedbacks();
         getSubjects();
+        fetchQuestionsData();
 
         const form = document.getElementById("filter-form");
         const typeFilter = document.getElementById("type-filter");
@@ -182,7 +151,7 @@
                   console.log("these are the feebacks sent : ", data);
 
                   if (data.feedbacks.length === 0) {
-                    displayMessage('No feedbacks found for the selected filters.', 'info');
+                    displayMessage('Nu au fost găsite recenzii pentru filtrele selectate.', 'info');
                     return;
                   }
 
@@ -191,32 +160,106 @@
                   feedbackContainer.innerHTML = "";
 
                   feedbacks.forEach((feedbackData) => {
+                    const groupedAnswers = {};
+
+                    feedbackData.feedback_answers.forEach(answer => {
+                          const categoryName = questionToCategoryMap[answer.question];
+                          if (!groupedAnswers[categoryName]) {
+                              groupedAnswers[categoryName] = [];
+                          }
+                          groupedAnswers[categoryName].push(answer);
+                      });
+
+                      const feedbackCategoriesHTML = Object.keys(groupedAnswers)
+                            .map(categoryName => {
+                                const answers = groupedAnswers[categoryName];
+
+                                const colorRow = answers
+                                    .map(answer => {
+                                        let color;
+                                        switch (answer.answer) {
+                                          case "Întotdeauna":
+                                                color = "#8BC34A"; 
+                                                break;
+                                            case "Destul de des":
+                                                color = "#CDDC39"; 
+                                                break;
+                                            case "Destul de rar":
+                                                color = "#FFC107"; 
+                                                break;
+                                            case "Niciodată":
+                                                color = "#FF5722"; 
+                                                break;
+                                            case "Nu mă pot pronunța":
+                                                color = "#9E9E9E"; 
+                                                break;
+                                        }
+
+                                        return `<div class="color-box" 
+                                                      style="background-color: ${color}"
+                                                      title="${answer.answer}"
+                                                      data-question="${answer.question}"></div>`;
+                                    })
+                                    .join("");
+
+                                return `
+                                    <div class="feedback-category">
+                                        <div class="color-row">${colorRow}</div>
+                                        <div class="hover-question" style="margin-top: 10px; font-size: 12px; color: #555; display: none;"></div>
+                                    </div>
+                                `;
+                            })
+                            .join("");
+
                     const feedbackCard = document.createElement("div");
                     feedbackCard.className = "review-card";
 
                     feedbackCard.innerHTML = `
                       <div class="card-body">
-                        <h6 class="card-subtitle">
-                          <i class="fas fa-book"></i> ${feedbackData.course}
-                          <span class="badge">${feedbackData.type === 'curs' ? 'Curs' : 'Seminar'}</span>
+
+                        <h6 class="card-subtitle card-header">
+                          <div>
+                            <i class="fas fa-book"></i> ${feedbackData.course}
+                            <span class="badge">${feedbackData.type === 'curs' ? 'Curs' : 'Seminar'}</span>
+                          </div>
+
+                          <div class="legend">
+                              <i class="fas fa-info-circle legend-icon" title="Vezi legenda"></i>
+                              <div class="legend-box">
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #8BC34A;"></span>
+                                    Întotdeauna
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #CDDC39;"></span>
+                                    Destul de des
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #FFC107;"></span>
+                                    Destul de rar
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #FF5722;"></span>
+                                    Niciodată
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #9E9E9E;"></span>
+                                    Nu mă pot pronunța
+                                </div>
+                              </div>
+                          </div>
                         </h6>
+
                         <p class="card-text">
                           <i class="fas fa-thumbs-up"></i> ${feedbackData.positive_feedback}
                         </p>
                         <p class="card-text">
                           <i class="fas fa-thumbs-down"></i> ${feedbackData.negative_feedback}
                         </p>
-                        <ul class="feedback-answers">
-                          ${feedbackData.feedback_answers
-                            .map(
-                              (feedback) => `
-                              <li>
-                                <strong>${feedback.question}</strong> ${generateStars(feedback.answer)}
-                              </li>
-                            `
-                            )
-                            .join("")}
-                        </ul>
+                        <div class="feedback-categories">
+                            ${feedbackCategoriesHTML}  
+                        </div>
+                        <div class="clicked-question-container"></div>
                         <p class="card-year">
                           <i class="fas fa-calendar"></i> ${feedbackData.year}
                         </p>
@@ -225,6 +268,42 @@
 
                     feedbackContainer.appendChild(feedbackCard);
                   });
+
+                  document.querySelectorAll('.legend').forEach(legend => {
+                        const legendBox = legend.querySelector('.legend-box');
+
+                        legend.querySelector('.legend-icon').addEventListener('click', () => {
+                            if (legendBox.style.display === 'block') {
+                                legendBox.style.display = 'none';
+                            } else {
+                                legendBox.style.display = 'block';
+                            }
+                        });
+
+                        document.addEventListener('click', (e) => {
+                            if (!legend.contains(e.target)) {
+                                legendBox.style.display = 'none';
+                            }
+                        });
+                  });
+
+                  document.querySelectorAll('.review-card').forEach(card => {
+                        const colorBoxes = card.querySelectorAll('.color-box');
+                        const questionContainer = card.querySelector('.clicked-question-container');
+
+                        colorBoxes.forEach(colorBox => {
+                            const questionText = colorBox.getAttribute('data-question');
+
+                            colorBox.addEventListener('click', () => {
+                                if (questionContainer.textContent === questionText) {
+                                    questionContainer.textContent = ''; 
+                                } else {
+                                    questionContainer.textContent = questionText; 
+                                }
+                            });
+                        });
+                    });
+
                 })
                 .catch((error) => {
                     console.error("Error fetching filtered feedbacks:", error);
@@ -232,6 +311,7 @@
         });
 
     });
+
   </script>
 </body>
 </html>

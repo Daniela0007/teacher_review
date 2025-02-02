@@ -165,23 +165,74 @@
       </section>
 
       <!-- Reviews Section -->
-      <div class="my-reviews" id="my-reviews">
-        <h2>Răsfoiește recenziile tale anterioare</h2>
+      <div class="my-reviews"  id="my-reviews">
+         <!-- <h2>Răsfoiește recenziile tale anterioare</h2>
         <div class="review-container" id="review-container">
-            <!-- Review cards -->
+        </div> -->
+
+        <div class="reviews-container">
+          <h3>Recenziile Mele</h3>
+          <div class="table-container">
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Profesor</th>
+                          <th>Materie</th>
+                          <th>Tip</th>
+                      </tr>
+                  </thead>
+                  <tbody id="reviews-body">
+                      <tr>
+                          <td>Prof. Andrei Popescu</td>
+                          <td>Algoritmi și Structuri de Date</td>
+                          <td>Curs</td>
+                      </tr>
+                      <tr>
+                          <td>Prof. Ioana Vasilescu</td>
+                          <td>Programare Web</td>
+                          <td>Seminar</td>
+                      </tr>
+                      <tr>
+                          <td>Prof. Mihai Radu</td>
+                          <td>Inteligență Artificială</td>
+                          <td>Curs</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
         </div>
       </div>
+
     </main>
     
     <script>
         const data = <?php echo json_encode($data); ?>;
         const form = document.getElementById('feedbackForm');
         const submitButton = document.getElementById('submitEvaluation');
+        const questionToCategoryMap = {};
         let formQuestions = [];
 
-        function generateStars(rating) {
-            return '★'.repeat(rating) + '☆'.repeat(5 - rating);
-        }
+        function fetchJsonData() {
+              return fetch('../app/utils/questions.json')
+                  .then((response) => {
+                      if (!response.ok) {
+                          throw new Error('Failed to fetch JSON data');
+                      }
+                      return response.json();
+                  })
+                  .then((data) => {
+                      data.categories.forEach(category => {
+                          category.questions.forEach(question => {
+                              questionToCategoryMap[question] = category.category_name;
+                          });
+                      });
+                      console.log('Question to Category Map:', questionToCategoryMap); // Debugging
+                  })
+                  .catch((error) => {
+                      console.error('Error fetching JSON:', error);
+                      throw error;
+                  });
+          }
 
         form.addEventListener('input', () => {
             const year = document.getElementById('year').value;
@@ -269,7 +320,7 @@
             const xssPattern = /<[^>]*>|<script.*?>.*?<\/script.*?>|javascript:|on\w+\s*=/gi;
 
             if (xssPattern.test(negativeFeedback) || xssPattern.test(positiveFeedback)) {
-                displayMessage("Invalid input detected in feedbacks", "error");
+                displayMessage("Input invalid în feedback.", "error");
                 return; 
             }
 
@@ -283,17 +334,28 @@
             });
 
             const selectedAnswers = [];
+            const selectedAnswersText = [];
             const radios = this.querySelectorAll('input[type="radio"]:checked');
             radios.forEach((radio) => {
-                selectedAnswers.push({
-                    question_id: radio.getAttribute('data-question-id'), 
-                    answer: radio.value, 
-                });
+              const label = radio.parentNode;
+              const text = label ? label.textContent.trim() : null;
+
+              const questionId = parseInt(radio.getAttribute('data-question-id'));
+              const questionText = formQuestions.find(q => q.id == questionId)?.question_text || "Unknown question";
+              console.log('Question text:', questionText);
+
+              selectedAnswers.push({
+                  question_id: questionId,
+                  question_text: questionText,
+                  answer_text: text
+              });
+
             });
 
             payload['feedback_answers'] = selectedAnswers;
 
-            //console.log('Payload:', payload);
+            console.log('Payload:', payload);
+
             fetch('?controller=Student&action=save', {
                 method: 'POST',
                 headers: {
@@ -315,53 +377,169 @@
                     
                     displayMessage(data.message, 'success');
 
-                    const reviewContainer = document.getElementById("review-container");
-                    const reviewSection = document.getElementById("my-reviews");
+                    const tableBody = document.getElementById('reviews-body');
+
+                    const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${payload.professor}</td>
+                            <td>${payload.course}</td>
+                            <td>${payload.type.charAt(0).toUpperCase() + payload.type.slice(1)}</td>
+                        `;
+                    tableBody.appendChild(row);
+
+                    // const reviewContainer = document.getElementById("review-container");
+                    // const reviewSection = document.getElementById("my-reviews");
                     
-                    if (reviewSection.style.display === 'none') {
-                      reviewSection.style.display = '';
-                    }
+                    // if (reviewSection.style.display === 'none') {
+                    //   reviewSection.style.display = '';
+                    // }
 
-                    const questionMap = {};
-                    formQuestions.forEach(question => {
-                      questionMap[question.id] = question.question_text;
-                    });
+                    // const groupedAnswers = {};
+                    // payload.feedback_answers.forEach(answer => {
+                    //         const categoryName = questionToCategoryMap[answer.question_text];
+                    //         if (!groupedAnswers[categoryName]) {
+                    //             groupedAnswers[categoryName] = [];
+                    //         }
+                    //         groupedAnswers[categoryName].push(answer);
+                    // });
 
-                    //console.log('questionMap:', questionMap); 
+                    // const feedbackCategoriesHTML = Object.keys(groupedAnswers)
+                    //         .map(categoryName => {
+                    //             const answers = groupedAnswers[categoryName];
 
-                    const reviewCard = `
-                         <div class="review-card">
-                          <div class="card-body">
-                            <h5 class="card-title">
-                              <i class="fas fa-user-tie"></i> ${payload.professor}
-                            </h5>
-                            <h6 class="card-subtitle">
-                              <i class="fas fa-book"></i> ${payload.course} 
-                              <span class="badge">${payload.type === 'curs' ? 'Curs' : 'Seminar'}</span>
-                            </h6>
-                            <p class="card-text">
-                              <i class="fas fa-thumbs-up"></i> ${payload.positive_feedback}
-                            </p>
-                            <p class="card-text">
-                              <i class="fas fa-thumbs-down"></i> ${payload.negative_feedback}
-                            </p>
-                            <ul class="feedback-answers">
-                              ${payload.feedback_answers
-                                .map(answer => {
-                                  const questionText = questionMap[answer.question_id] || "Unknown question";
-                                  return `
-                                    <li>
-                                      <strong>${questionText}</strong>: ${generateStars(answer.answer)}
-                                    </li>
-                                  `;
-                                })
-                                .join('')}
-                            </ul>
-                          </div>
-                        </div>
-                    `;
+                    //             const colorRow = answers
+                    //                 .map(answer => {
+                    //                     let color;
+                    //                     switch (answer.answer_text) {
+                    //                       case "Întotdeauna":
+                    //                             color = "#8BC34A"; 
+                    //                             break;
+                    //                         case "Destul de des":
+                    //                             color = "#CDDC39"; 
+                    //                             break;
+                    //                         case "Destul de rar":
+                    //                             color = "#FFC107"; 
+                    //                             break;
+                    //                         case "Niciodată":
+                    //                             color = "#FF5722"; 
+                    //                             break;
+                    //                         case "Nu mă pot pronunța":
+                    //                             color = "#9E9E9E"; 
+                    //                             break;
+                    //                     }
 
-                    reviewContainer.innerHTML += reviewCard;
+                    //                     return `<div class="color-box" 
+                    //                                   style="background-color: ${color}"
+                    //                                   title="${answer.answer_text}"
+                    //                                   data-question="${answer.question_text}"></div>`;
+                    //                  })
+                    //                 .join("");
+
+                    //             return `
+                    //                 <div class="feedback-category">
+                    //                     <div class="color-row">${colorRow}</div>
+                    //                     <div class="hover-question" style="margin-top: 10px; font-size: 12px; color: #555; display: none;"></div>
+                    //                 </div>
+                    //             `;
+                    //         })
+                    //         .join("");
+
+                    // //console.log('questionMap:', questionMap); 
+
+                    // const reviewCard = `
+                    //      <div class="review-card">
+                    //       <div class="card-body">
+
+                    //             <div class="card-header">
+                    //               <h5 class="card-title">
+                    //                 <i class="fas fa-user-tie"></i> ${payload.professor}
+                    //               </h5>
+
+                    //               <div class="legend">
+                    //                   <i class="fas fa-info-circle legend-icon" title="Vezi legenda"></i>
+                    //                   <div class="legend-box">
+                    //                       <div class="legend-item">
+                    //                           <span class="color-box" style="background-color: #8BC34A;"></span>
+                    //                           Întotdeauna
+                    //                       </div>
+                    //                       <div class="legend-item">
+                    //                           <span class="color-box" style="background-color: #CDDC39;"></span>
+                    //                           Destul de des
+                    //                       </div>
+                    //                       <div class="legend-item">
+                    //                           <span class="color-box" style="background-color: #FFC107;"></span>
+                    //                           Destul de rar
+                    //                       </div>
+                    //                       <div class="legend-item">
+                    //                           <span class="color-box" style="background-color: #FF5722;"></span>
+                    //                           Niciodată
+                    //                       </div>
+                    //                       <div class="legend-item">
+                    //                           <span class="color-box" style="background-color: #9E9E9E;"></span>
+                    //                           Nu mă pot pronunța
+                    //                       </div>
+                    //                   </div>
+                                      
+                    //               </div>
+                    //             </div>
+
+                    //         <h6 class="card-subtitle">
+                    //           <i class="fas fa-book"></i> ${payload.course} 
+                    //           <span class="badge">${payload.type === 'curs' ? 'Curs' : 'Seminar'}</span>
+                    //         </h6>
+                    //         <p class="card-text">
+                    //           <i class="fas fa-thumbs-up"></i> ${payload.positive_feedback}
+                    //         </p>
+                    //         <p class="card-text">
+                    //           <i class="fas fa-thumbs-down"></i> ${payload.negative_feedback}
+                    //         </p>
+                    //         <div class="feedback-categories">
+                    //               ${feedbackCategoriesHTML}  
+                    //         </div>
+                    //         <div class="clicked-question-container"></div>
+                    //       </div>
+                    //     </div>
+                    // `;
+
+                    // reviewContainer.innerHTML += reviewCard;
+
+                    // // const newReviewCard = createReviewCard(payload); 
+                    // // reviewContainer.innerHTML += newReviewCard;
+
+                    // document.querySelectorAll('.legend').forEach(legend => {
+                    //     const legendBox = legend.querySelector('.legend-box');
+
+                    //     legend.querySelector('.legend-icon').addEventListener('click', () => {
+                    //         if (legendBox.style.display === 'block') {
+                    //             legendBox.style.display = 'none';
+                    //         } else {
+                    //             legendBox.style.display = 'block';
+                    //         }
+                    //     });
+
+                    //     document.addEventListener('click', (e) => {
+                    //         if (!legend.contains(e.target)) {
+                    //             legendBox.style.display = 'none';
+                    //         }
+                    //     });
+                    // });
+
+                    // document.querySelectorAll('.review-card').forEach(card => {
+                    //     const colorBoxes = card.querySelectorAll('.color-box');
+                    //     const questionContainer = card.querySelector('.clicked-question-container');
+
+                    //     colorBoxes.forEach(colorBox => {
+                    //         const questionText = colorBox.getAttribute('data-question');
+
+                    //         colorBox.addEventListener('click', () => {
+                    //             if (questionContainer.textContent === questionText) {
+                    //                 questionContainer.textContent = ''; 
+                    //             } else {
+                    //                 questionContainer.textContent = questionText; 
+                    //             }
+                    //         });
+                    //     });
+                    // });
 
                     this.reset();
                     const submitButton = document.getElementById('submitEvaluation');
@@ -371,57 +549,12 @@
                     document.getElementById("professors").disabled = true;
                 })
                 .catch((error) => {
-                  displayMessage(error.message || "Something went wrong. Please try again.", 'error');
+                  displayMessage(error.message || "Ceva nu a mers bine. Încearcă din nou mai târziu.", 'error');
                 });
         });
-         
-        function loadQuestions() {
-            fetch('?controller=Student&action=getQuestions', {
-              method: 'GET',
-            }) 
-            .then(response => response.json())
-            .then(data => {
-                //console.log('Questions:', data.questions);
-                const questions = data.questions;
-                formQuestions = questions;
-                //console.log('formQuestions:', formQuestions);
-                const container = document.getElementById('questions-container');
-                container.innerHTML = '';
 
-                questions.forEach((question, index) => {
-                    const questionDiv = document.createElement("div");
-                    questionDiv.className = "row";
-
-                    questionDiv.innerHTML = `
-                        <label class="form-label">
-                            <i class="fas fa-question-circle"></i> ${question.question_text}
-                        </label>
-                        <div class="radios">
-                            <label class="radio-inline">
-                                <input type="radio" name="question${question.id}" value="1" data-question-id="${question.id}" /> 1
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="question${question.id}" value="2" data-question-id="${question.id}" /> 2
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="question${question.id}" value="3" data-question-id="${question.id}" /> 3
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="question${question.id}" value="4" data-question-id="${question.id}" /> 4
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="question${question.id}" value="5" data-question-id="${question.id}" /> 5
-                            </label>
-                        </div>
-                    `;
-
-                    container.appendChild(questionDiv);
-                });
-              }).catch(error => console.error('Error loading questions:', error));
-          }
-
-        function getFeedbacks() {
-            fetch('?controller=Student&action=getFeedbacks', {
+        function getLastReviews() {
+          fetch('?controller=Student&action=getLastReviews', {
                 method: 'GET',
             })
                 .then(response => {
@@ -431,68 +564,280 @@
                   return response.json(); 
                 })
                 .then(data => {
-                    //console.log('Feedbacks:', data);
+                    console.log('data: ', data);
 
-                    if (data.feedbacks.length === 0) {
-                        //console.log('No feedbacks available.');
-                        //displayMessage('No feedbacks found.', 'info');
-                        const reviewContainer = document.getElementById("my-reviews");
-                        reviewContainer.style.display = '';
-                    } else {
-                        const feedbacks = data.feedbacks;
-                        const myReviewsContainer = document.getElementById("my-reviews");
-                        const reviewContainer = document.getElementById("review-container");
+                    const tableBody = document.getElementById('reviews-body');
+                    tableBody.innerHTML = ''; 
 
-                        if (myReviewsContainer.style.display === 'none') {
-                            myReviewsContainer.style.display = '';
-                        }
-
-                        feedbacks.forEach(feedback => {
-                        const reviewCard = `
-                            <div class="review-card">
-                              <div class="card-body">
-                                <h5 class="card-title">
-                                  <i class="fas fa-user-tie"></i> ${feedback.professor}
-                                </h5>
-                                <h6 class="card-subtitle">
-                                  <i class="fas fa-book"></i> ${feedback.course} 
-                                  <span class="badge">${feedback.type === 'curs' ? 'Curs' : 'Seminar'}</span>
-                                </h6>
-                                <p class="card-text">
-                                  <i class="fas fa-thumbs-up"></i> ${feedback.positive_feedback}
-                                </p>
-                                <p class="card-text">
-                                  <i class="fas fa-thumbs-down"></i> ${feedback.negative_feedback}
-                                </p>
-                                <ul class="feedback-answers">
-                                  ${feedback.feedback_answers
-                                    .map(
-                                      (feedback) => `
-                                      <li>
-                                        <strong>${feedback.question}</strong> ${generateStars(feedback.answer)}
-                                      </li>
-                                    `
-                                    )
-                                    .join("")}
-                                </ul>
-                              </div>
-                            </div>
-                          `;
-
-                          reviewContainer.innerHTML += reviewCard;
-                      });
+                    if (!data.feedbacks || data.feedbacks.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="3" class="no-reviews">Nu ai oferit încă nicio recenzie.</td></tr>';
+                        return;
                     }
+
+                    data.feedbacks.forEach(review => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${review.professor}</td>
+                            <td>${review.course}</td>
+                            <td>${review.type.charAt(0).toUpperCase() + review.type.slice(1)}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                    
                 }).catch(error => {
-                      //console.error('Fetch error:', error);
-                      displayMessage('An unexpected error occurred. Please try again later.', 'error');
+                  console.error('Fetch error:', error);
+                  displayMessage('Ceva nu a mers bine.Te rugăm să incerci mai târziu.', 'error');
                 });
+
         }
+
+        function loadQuestions() {
+            fetch('?controller=Student&action=getQuestions', {
+                method: 'GET',
+            })
+                .then(response => 
+                  // console.log("These are the form Questions: ", response.json());
+                  response.json()
+                )
+                .then(data => {
+                    formQuestions = data.questions;
+                    console.log("These are the form Questions: ", formQuestions);
+                    const questions = data.questions;
+                    const container = document.getElementById('questions-container');
+                    container.innerHTML = '';
+
+                    const answers = [
+                        { value: '1', text: 'Niciodată' },
+                        { value: '2', text: 'Destul de rar' },
+                        { value: '3', text: 'Destul de des' },
+                        { value: '4', text: 'Întotdeauna' },
+                        { value: '0', text: 'Nu mă pot pronunța' }
+                    ];
+
+                    questions.forEach((question) => {
+                        const questionDiv = document.createElement("div");
+                        questionDiv.className = "row";
+
+                        let radiosHTML = '';
+                        answers.forEach(answer => {
+                            radiosHTML += `
+                                <label class="radio-inline">
+                                    <input type="radio" name="question${question.id}" value="${answer.value}" data-question-id="${question.id}" 
+                                        ${answer.value === '0' ? 'checked' : ''} />
+                                    ${answer.text}
+                                </label>
+                            `;
+                        });
+
+                        questionDiv.innerHTML = `
+                            <label class="form-label">
+                                <i class="fas fa-question-circle"></i> ${question.question_text}
+                            </label>
+                            <div class="radios">
+                                ${radiosHTML}
+                            </div>
+                        `;
+
+                        container.appendChild(questionDiv);
+                    });
+                })
+                .catch(error => console.error('Error loading questions:', error));
+        }
+
+        // function getFeedbacks() {
+        //  //fetchJsonData();
+
+        //     fetch('?controller=Student&action=getFeedbacks', {
+        //         method: 'GET',
+        //     })
+        //         .then(response => {
+        //           if (!response.ok) {
+        //             throw new Error(`HTTP error! Status: ${response.status}`);
+        //           }
+        //           return response.json(); 
+        //         })
+        //         .then(data => {
+        //             //console.log('Feedbacks:', data);
+
+        //             if (data.feedbacks.length === 0) {
+        //                 //console.log('No feedbacks available.');
+        //                 //displayMessage('No feedbacks found.', 'info');
+        //                 const reviewContainer = document.getElementById("my-reviews");
+        //                 reviewContainer.style.display = '';
+        //             } else {
+        //                 const feedbacks = data.feedbacks;
+        //                 const myReviewsContainer = document.getElementById("my-reviews");
+        //                 const reviewContainer = document.getElementById("review-container");
+
+        //                 if (myReviewsContainer.style.display === 'none') {
+        //                     myReviewsContainer.style.display = '';
+        //                 }
+
+        //                 reviewContainer.innerHTML = '';
+
+        //                 feedbacks.forEach(feedback => {
+        //                   const groupedAnswers = {};
+        //                   feedback.feedback_answers.forEach(answer => {
+        //                     const categoryName = questionToCategoryMap[answer.question];
+        //                     if (!groupedAnswers[categoryName]) {
+        //                         groupedAnswers[categoryName] = [];
+        //                     }
+        //                     groupedAnswers[categoryName].push(answer);
+        //                 });
+
+        //                 const feedbackCategoriesHTML = Object.keys(groupedAnswers)
+        //                     .map(categoryName => {
+        //                         const answers = groupedAnswers[categoryName];
+
+        //                         const colorRow = answers
+        //                             .map(answer => {
+        //                                 let color;
+        //                                 switch (answer.answer) {
+        //                                   case "Întotdeauna":
+        //                                         color = "#8BC34A"; 
+        //                                         break;
+        //                                     case "Destul de des":
+        //                                         color = "#CDDC39"; 
+        //                                         break;
+        //                                     case "Destul de rar":
+        //                                         color = "#FFC107"; 
+        //                                         break;
+        //                                     case "Niciodată":
+        //                                         color = "#FF5722"; 
+        //                                         break;
+        //                                     case "Nu mă pot pronunța":
+        //                                         color = "#9E9E9E"; 
+        //                                         break;
+        //                                 }
+
+        //                                 return `<div class="color-box" 
+        //                                               style="background-color: ${color}"
+        //                                               title="${answer.answer}"
+        //                                               data-question="${answer.question}"></div>`;
+        //                             })
+        //                             .join("");
+
+        //                         return `
+        //                             <div class="feedback-category">
+        //                                 <div class="color-row">${colorRow}</div>
+        //                                 <div class="hover-question" style="margin-top: 10px; font-size: 12px; color: #555; display: none;"></div>
+        //                             </div>
+        //                         `;
+        //                     })
+        //                     .join("");
+                          
+        //                 const reviewCard = `
+        //                       <div class="review-card">
+
+        //                         <div class="card-body">
+
+        //                         <div class="card-header">
+        //                           <h5 class="card-title">
+        //                             <i class="fas fa-user-tie"></i> ${feedback.professor}
+        //                           </h5>
+
+        //                           <div class="legend">
+        //                               <i class="fas fa-info-circle legend-icon" title="Vezi legenda"></i>
+        //                               <div class="legend-box">
+        //                                   <div class="legend-item">
+        //                                       <span class="color-box" style="background-color: #8BC34A;"></span>
+        //                                       Întotdeauna
+        //                                   </div>
+        //                                   <div class="legend-item">
+        //                                       <span class="color-box" style="background-color: #CDDC39;"></span>
+        //                                       Destul de des
+        //                                   </div>
+        //                                   <div class="legend-item">
+        //                                       <span class="color-box" style="background-color: #FFC107;"></span>
+        //                                       Destul de rar
+        //                                   </div>
+        //                                   <div class="legend-item">
+        //                                       <span class="color-box" style="background-color: #FF5722;"></span>
+        //                                       Niciodată
+        //                                   </div>
+        //                                   <div class="legend-item">
+        //                                       <span class="color-box" style="background-color: #9E9E9E;"></span>
+        //                                       Nu mă pot pronunța
+        //                                   </div>
+        //                               </div>
+                                      
+        //                           </div>
+        //                         </div>
+
+        //                           <h6 class="card-subtitle">
+        //                             <i class="fas fa-book"></i> ${feedback.course} 
+        //                             <span class="badge">${feedback.type === 'curs' ? 'Curs' : 'Seminar'}</span>
+        //                           </h6>
+        //                           <p class="card-text">
+        //                             <i class="fas fa-thumbs-up"></i> ${feedback.positive_feedback}
+        //                           </p>
+        //                           <p class="card-text">
+        //                             <i class="fas fa-thumbs-down"></i> ${feedback.negative_feedback}
+        //                           </p>
+        //                           <div class="feedback-categories">
+        //                              ${feedbackCategoriesHTML}  
+        //                           </div>
+        //                           <div class="clicked-question-container"></div>
+        //                       </div>
+        //                     </div>
+        //                   `;
+
+        //                 reviewContainer.innerHTML += reviewCard;
+        //               });
+        //             }
+
+        //             document.querySelectorAll('.legend').forEach(legend => {
+        //                 const legendBox = legend.querySelector('.legend-box');
+
+        //                 legend.querySelector('.legend-icon').addEventListener('click', () => {
+        //                     if (legendBox.style.display === 'block') {
+        //                         legendBox.style.display = 'none';
+        //                     } else {
+        //                         legendBox.style.display = 'block';
+        //                     }
+        //                 });
+
+        //                 document.addEventListener('click', (e) => {
+        //                     if (!legend.contains(e.target)) {
+        //                         legendBox.style.display = 'none';
+        //                     }
+        //                 });
+        //             });
+
+        //             document.querySelectorAll('.review-card').forEach(card => {
+        //                 const colorBoxes = card.querySelectorAll('.color-box');
+        //                 const questionContainer = card.querySelector('.clicked-question-container');
+
+        //                 colorBoxes.forEach(colorBox => {
+        //                     const questionText = colorBox.getAttribute('data-question');
+
+        //                     colorBox.addEventListener('click', () => {
+        //                         if (questionContainer.textContent === questionText) {
+        //                             questionContainer.textContent = ''; 
+        //                         } else {
+        //                             questionContainer.textContent = questionText; 
+        //                         }
+        //                     });
+        //                 });
+        //             });
+
+        //         }).catch(error => {
+        //               console.error('Fetch error:', error);
+        //               displayMessage('Ceva nu a mers bine.Te rugăm să incerci mai târziu.', 'error');
+        //         });
+        // }
               
         document.addEventListener('DOMContentLoaded', () => {
             loadQuestions();
-            getFeedbacks();
+            fetchJsonData()
+                .then(() => {
+                    // studentul nu isi poate vedea propriile feebackuri deocamdata
+                    // getFeedbacks();
+                   getLastReviews();
+                });
         });
 
+        
     </script>
   </body>
 </html>

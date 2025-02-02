@@ -82,9 +82,6 @@
 
   <!-- JavaScript -->
   <script>
-    function generateStars(rating) {
-      return '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    }
 
     function displayMessage(message, type) {
         const messageContainer = document.createElement('div');
@@ -99,8 +96,28 @@
         }, 3000);
     }
 
-    // All the filtering logic here -->
     let jsonData = {};
+    const questionToCategoryMap = {};
+
+    function fetchQuestionsData() {
+        fetch('../app/utils/questions.json') 
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch JSON data');
+                    }
+                    return response.json(); 
+                })
+                .then((data) => {
+                  data.categories.forEach(category => {
+                    category.questions.forEach(question => {
+                      questionToCategoryMap[question] = category.category_name;
+                    });
+                  });
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+    }
 
     function fetchJsonData() {
         fetch('../app/utils/data.json') 
@@ -118,6 +135,7 @@
                     console.error('Error:', error);
                 });
     }
+    
     const courseSelect = document.getElementById("course-select");
     const professorSelect = document.getElementById("professor-select");
     const typeSelect = document.getElementById("type-select");
@@ -177,7 +195,6 @@
       }
     }
 
-    
     function applyFilters() {
         const year = document.getElementById('year-select').value;
         const course = document.getElementById('course-select').value;
@@ -198,7 +215,7 @@
         if (filterParams.year && filterParams.course && filterParams.professor) {
             getFeedbacks(filterParams); 
         } else {
-            displayMessage('Please select all required filters (year, course, and professor) before applying.', "info");
+            displayMessage('Te rugăm să selectezi toate filtrele necesare (anul, cursul și profesorul) înainte de a aplica.', "info");
         }
     }
 
@@ -225,21 +242,103 @@
                 feedbackContainer.innerHTML = "";
 
                 if (data.feedbacks.length === 0) {
-                    displayMessage('No feedbacks found for the selected filters.', 'info');
+                    displayMessage('Nu au fost găsite recenzii pentru filtrele selectate.', 'info');
                     return;
                 }
 
                 data.feedbacks.forEach((feedbackData) => {
                     const feedbackCard = document.createElement("div");
+                    const groupedAnswers = {};
+
+                    feedbackData.feedback_answers.forEach(answer => {
+                          const categoryName = questionToCategoryMap[answer.question];
+                          if (!groupedAnswers[categoryName]) {
+                              groupedAnswers[categoryName] = [];
+                          }
+                          groupedAnswers[categoryName].push(answer);
+                      });
+
+                    const feedbackCategoriesHTML = Object.keys(groupedAnswers)
+                            .map(categoryName => {
+                                const answers = groupedAnswers[categoryName];
+
+                                const colorRow = answers
+                                    .map(answer => {
+                                        let color;
+                                        switch (answer.answer) {
+                                            case "Întotdeauna":
+                                                color = "green";
+                                                break;
+                                            case "Destul de des":
+                                                color = "yellow";
+                                                break;
+                                            case "Destul de rar":
+                                                color = "orange";
+                                                break;
+                                            case "Niciodată":
+                                                color = "red";
+                                                break;
+                                            case "Nu mă pot pronunța":
+                                                color = "gray";
+                                                break;
+                                        }
+
+                                        return `<div class="color-box" 
+                                                      style="background-color: ${color}"
+                                                      title="${answer.answer}"
+                                                      data-question="${answer.question}"></div>`;
+                                    })
+                                    .join("");
+
+                                return `
+                                    <div class="feedback-category">
+                                        <div class="color-row">${colorRow}</div>
+                                        <div class="hover-question" style="margin-top: 10px; font-size: 12px; color: #555; display: none;"></div>
+                                    </div>
+                                `;
+                            })
+                            .join("");
 
                     feedbackCard.className = "review-card";
 
                     feedbackCard.innerHTML = `
                       <div class="card-body">
-                        <h6 class="card-subtitle">
-                          <i class="fas fa-book"></i> ${feedbackData.course} 
-                          <span class="badge">${feedbackData.type === 'curs' ? 'Curs' : 'Seminar'}</span>
+
+                        <h6 class="card-subtitle card-header">
+                          <div>
+                            <i class="fas fa-book"></i> ${feedbackData.course} 
+                            <span class="badge">${feedbackData.type === 'curs' ? 'Curs' : 'Seminar'}</span>
+                          </div>
+
+                           <div class="legend">
+                              <i class="fas fa-info-circle legend-icon" title="Vezi legenda"></i>
+                              <div class="legend-box">
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #8BC34A;"></span>
+                                    Întotdeauna
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #CDDC39;"></span>
+                                    Destul de des
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #FFC107;"></span>
+                                    Destul de rar
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #FF5722;"></span>
+                                    Niciodată
+                                </div>
+                                <div class="legend-item">
+                                    <span class="color-box" style="background-color: #9E9E9E;"></span>
+                                    Nu mă pot pronunța
+                                </div>
+                              </div>
+                          </div>
+
                         </h6>
+
+
                         <p class="card-year">
                           <i class="fas fa-calendar"></i> ${feedbackData.year}
                         </p>
@@ -249,39 +348,63 @@
                         <p class="card-text">
                           <i class="fas fa-thumbs-down"></i> ${feedbackData.negative_feedback}
                         </p>
-                        <ul class="feedback-answers">
-                          ${feedbackData.feedback_answers
-                            .map(
-                              (feedback) => `
-                              <li>
-                                <strong>${feedback.question}</strong> ${generateStars(feedback.answer)}
-                              </li>
-                            `
-                            )
-                            .join("")}
-                        </ul>
-                        <label>
-                          <input type="checkbox" class="show-email-checkbox" /> Show Student Email
-                        </label>
-                        <p class="student-email" style="display: none;">
-                          <i class="fas fa-envelope"></i> ${feedbackData.student_mail}
-                        </p>
+                        <div class="feedback-categories">
+                            ${feedbackCategoriesHTML}  
+                        </div>
+                        <div class="clicked-question-container"></div>
                       </div>
                     `;
 
                     feedbackContainer.appendChild(feedbackCard);
 
-                    const checkbox = feedbackCard.querySelector(".show-email-checkbox");
-                    const emailParagraph = feedbackCard.querySelector(".student-email");
+                    // const checkbox = feedbackCard.querySelector(".show-email-checkbox");
+                    // const emailParagraph = feedbackCard.querySelector(".student-email");
 
-                    checkbox.addEventListener("change", () => {
-                      if (checkbox.checked) {
-                        emailParagraph.style.display = "block"; 
-                      } else {
-                        emailParagraph.style.display = "none"; 
-                      }
-                    });
+                    // checkbox.addEventListener("change", () => {
+                    //   if (checkbox.checked) {
+                    //     emailParagraph.style.display = "flex"; 
+                    //   } else {
+                    //     emailParagraph.style.display = "none"; 
+                    //   }
+                    // });
+
                 });
+
+                document.querySelectorAll('.legend').forEach(legend => {
+                        const legendBox = legend.querySelector('.legend-box');
+
+                        legend.querySelector('.legend-icon').addEventListener('click', () => {
+                            if (legendBox.style.display === 'block') {
+                                legendBox.style.display = 'none';
+                            } else {
+                                legendBox.style.display = 'block';
+                            }
+                        });
+
+                        document.addEventListener('click', (e) => {
+                            if (!legend.contains(e.target)) {
+                                legendBox.style.display = 'none';
+                            }
+                        });
+                });
+
+                document.querySelectorAll('.review-card').forEach(card => {
+                        const colorBoxes = card.querySelectorAll('.color-box');
+                        const questionContainer = card.querySelector('.clicked-question-container');
+
+                        colorBoxes.forEach(colorBox => {
+                            const questionText = colorBox.getAttribute('data-question');
+
+                            colorBox.addEventListener('click', () => {
+                                if (questionContainer.textContent === questionText) {
+                                    questionContainer.textContent = ''; 
+                                } else {
+                                    questionContainer.textContent = questionText; 
+                                }
+                            });
+                        });
+                });
+
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -290,6 +413,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         fetchJsonData();
+        fetchQuestionsData();
     });
   </script>
 </body>
